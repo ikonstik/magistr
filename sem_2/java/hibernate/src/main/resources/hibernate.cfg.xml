@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <!-- === НАСТРОЙКИ ПОДКЛЮЧЕНИЯ К БАЗЕ ДАННЫХ === -->
+        <!-- Драйвер JDBC для PostgreSQL -->
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+
+        <!-- URL подключения к вашей базе employee_db -->
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/employee_db</property>
+
+        <!-- Учётные данные  -->
+        <property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.password">123</property>
+
+        <!-- === ДИАЛЕКТ POSTGRESQL === -->
+        <!-- Указывает Hibernate, как генерировать SQL для PostgreSQL -->
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <!-- Для PostgreSQL 10+ можно использовать более новый диалект -->
+        <!-- <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL10Dialect</property> -->
+
+        <!-- === ДОПОЛНИТЕЛЬНЫЕ НАСТРОЙКИ === -->
+        <!-- Показывать SQL-запросы в консоли (удобно для отладки) -->
+        <property name="hibernate.show_sql">true</property>
+
+        <!-- Форматировать SQL для читаемости -->
+        <property name="hibernate.format_sql">true</property>
+
+        <!-- Автоматическое управление схемой БД (будьте осторожны!) -->
+        <!-- validate: проверяет схему, но не меняет -->
+        <!-- update: обновляет схему при необходимости -->
+        <!-- create: создаёт схему заново при старте -->
+        <!-- create-drop: создаёт при старте, удаляет при остановке -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Текущий контекст сессии (обычно thread) -->
+        <property name="hibernate.current_session_context_class">thread</property>
+
+        <!-- === РЕГИСТРАЦИЯ МАППИНГОВ === -->
+        <!-- Вариант 1: Указываем классы сущностей (если используете аннотации) -->
+        <mapping class="com.example.Employee"/>
+
+        <!-- Вариант 2: Указываем XML-файлы маппинга (если используете .hbm.xml) -->
+        <!-- <mapping resource="com/example/Employee.hbm.xml"/> -->
+
+    </session-factory>
+</hibernate-configuration>

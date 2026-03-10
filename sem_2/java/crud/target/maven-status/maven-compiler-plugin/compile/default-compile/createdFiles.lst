@@ -1,0 +1,8 @@
+com\example\service\LibraryService$BookLoanInfo.class
+com\example\service\LibraryService$LibraryStatistics.class
+com\example\model\BookLoan.class
+com\example\Main.class
+com\example\model\Reader.class
+com\example\config\DatabaseConfig.class
+com\example\model\Book.class
+com\example\service\LibraryService.class

@@ -1,0 +1,553 @@
+{
+  "info": {
+    "_postman_id": "bcf87d29-68d2-437f-9dc0-e1a7d4f3ac65",
+    "name": "Booking API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52207815",
+    "_collection_link": "https://go.postman.co/collection/52207815-bcf87d29-68d2-437f-9dc0-e1a7d4f3ac65?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Авторизация пользователя",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status coed is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Token in response\", function () {\r",
+              "    var responseJson = pm.response.json();\r",
+              "    var token = responseJson.token;\r",
+              "    pm.environment.set(\"token\", token);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"example@icloud.com\",\r\n    \"password\": \"password\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "/api/auth/login",
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Авторизация пользователя",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "/api/auth/login",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "{{token}}",
+              "description": "",
+              "type": "text"
+            }
+          ],
+          "cookie": [
+            {
+              "expires": "Invalid Date",
+              "domain": "",
+              "path": ""
+            }
+          ],
+          "body": ""
+        }
+      ]
+    },
+    {
+      "name": "Получение списка мероприятий",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              ".test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "})",
+              "",
+              "pm.test(\"Response has JSON format\", function () {",
+              "    pm.response.to.be.json;",
+              "})",
+              "",
+              "pm.test(\"Response has primary keys\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('id');",
+              "    pm.expect(jsonData).to.have.property('title');",
+              "    pm.expect(jsonData).to.have.property('date');",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "{{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "/api/events/?sportType={{sportType}}&date={{date}}&location={{location}}",
+          "path": [
+            "api",
+            "events",
+            ""
+          ],
+          "query": [
+            {
+              "key": "sportType",
+              "value": "{{sportType}}"
+            },
+            {
+              "key": "date",
+              "value": "{{date}}"
+            },
+            {
+              "key": "location",
+              "value": "{{location}}"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Получение списка мероприятий",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "/api/events/?sportType={{sportType}}&date={{date}}&location={{location}}",
+              "path": [
+                "api",
+                "events",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "sportType",
+                  "value": "{{sportType}}"
+                },
+                {
+                  "key": "date",
+                  "value": "{{date}}"
+                },
+                {
+                  "key": "location",
+                  "value": "{{location}}"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "",
+          "header": [],
+          "cookie": [
+            {
+              "expires": "Invalid Date",
+              "domain": "",
+              "path": ""
+            }
+          ],
+          "body": "{\r\n    {\r\n        \"event_id\": 1,\r\n        \"title\": \"title1\",\r\n        \"date\": \"19.02.2026\",\r\n        \"location\": \"Moscow\",\r\n        \"price\": 1000\r\n    },\r\n    {   \r\n        \"event_id\": 2,\r\n        \"title\": \"title2\",\r\n        \"date\": \"25.02.2026\",\r\n        \"location\": \"Kazan\",\r\n        \"price\": 800\r\n\r\n    }\r\n}"
+        }
+      ]
+    },
+    {
+      "name": "Создание брони",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Has unicue booking_id\", function() {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"booking_id\");\r",
+              "    pm.expect(jsonData.booking_id).to.not.be.null;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Event_id is not valid\", function() {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Error message about eventId\", function() {\r",
+              "    var responseData = pm.response.json();\r",
+              "    pm.expect(responseData).to.have.property('error');\r",
+              "    pm.expect(responseData.error).to.include('eventId');\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "{{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"event_id\": 1,\r\n    \"amount_tickets\": 2,\r\n    \"total_price\": 2000\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "/api/bookings",
+          "path": [
+            "api",
+            "bookings"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Создание брони",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"event_id\": 1,\r\n    \"amount_tickets\": 2,\r\n    \"total_price\": 2000\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "/api/bookings",
+              "path": [
+                "api",
+                "bookings"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": "",
+          "header": [],
+          "cookie": [
+            {
+              "expires": "Invalid Date",
+              "domain": "",
+              "path": ""
+            }
+          ],
+          "body": "{\r\n    \"booking_id\": 105,\r\n    \"event_id\": 1,\r\n    \"amount_tickets\": 2,\r\n    \"total_price\": 2000\r\n}"
+        }
+      ]
+    },
+    {
+      "name": "Оплата брони",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Change PAID status\", function () {\r",
+              "    var responseJson = pm.response.json();\r",
+              "    pm.expect(responseJson).to.have.property(\"status\");\r",
+              "    pm.expect(responseJson.status).to.equal(\"PAID\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Bad request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Error message\", function () {\r",
+              "    var responseData = pm.response.json();\r",
+              "    pm.expect(responseData).to.have.property('message');\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "{{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"booking_id\": 105,\r\n    \"amount_tickets\": 2,\r\n    \"total_price\": 2000\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "/api/payments",
+          "path": [
+            "api",
+            "payments"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Оплата брони (успешно)",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"booking_id\": 105,\r\n    \"amount_tickets\": 2,\r\n    \"total_price\": 2000\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "/api/payments",
+              "path": [
+                "api",
+                "payments"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n    \"payement_id\": 100,\r\n    \"booking_id\": 105,\r\n    \"status\": \"PAID\"\r\n}"
+        },
+        {
+          "name": "Оплата брони (отказ)",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"booking_id\": 105,\r\n    \"amount_tickets\": 2,\r\n    \"total_price\": 2000\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "/api/payments",
+              "path": [
+                "api",
+                "payments"
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n    \"message\": \"Error message\"\r\n}"
+        }
+      ]
+    },
+    {
+      "name": "Получение деталей конкретной брони по ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Booking validation\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"booking_id\");\r",
+              "    pm.expect(jsonData).to.have.property(\"total_price\");\r",
+              "    pm.expect(jsonData).to.have.property(\"status\");\r",
+              "    pm.expect(jsonData).to.have.property(\"event_id\");\r",
+              "    pm.expect(jsonData.booking_id).to.equal(105);\r",
+              "    pm.expect(jsonData.total_price).to.equal(2000);\r",
+              "    pm.expect(jsonData.status).to.equal(\"PAID\");\r",
+              "    pm.expect(jsonData.event_id).to.equal(1);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Bad booking_id\", function () {\r",
+              "    pm.expect(pm.response.code).to.equal(404);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Error message\", function () {\r",
+              "    var responseJson = pm.response.json();\r",
+              "    pm.expect(responseJson).to.have.property('message');\r",
+              "    pm.expect(responseJson.message).to.equal(\"Booking not found\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "{{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "/api/bookings/{bookingId}",
+          "path": [
+            "api",
+            "bookings",
+            "{bookingId}"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Получение деталей конкретной брони по ID (успешно)",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/api/bookings/{bookingId}",
+              "path": [
+                "api",
+                "bookings",
+                "{bookingId}"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n    \"booking_id\": 105,\r\n    \"total_price\": 2000,\r\n    \"status\": \"PAID\",\r\n    \"event_id\": 1\r\n}"
+        },
+        {
+          "name": "Получение деталей конкретной брони по ID (не найдено)",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/api/bookings/{bookingId}",
+              "path": [
+                "api",
+                "bookings",
+                "{bookingId}"
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n    \"message\": \"Booking not found\"\r\n}"
+        }
+      ]
+    }
+  ]
+}

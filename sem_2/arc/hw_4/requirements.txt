@@ -1,0 +1,7 @@
+fastapi[standard]
+uvicorn[standard]
+kafka-python==2.0.2
+pydantic
+sqlalchemy
+asyncpg
+psycopg2-binary
