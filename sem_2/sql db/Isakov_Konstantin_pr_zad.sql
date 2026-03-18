@@ -4,7 +4,7 @@ from project p
 where date_part('year', p.sign_date) = 2023
 
 -- 2) Получите общий возраст сотрудников, нанятых в 2022 году.
-select date_trunc('day', avg(age(p.birthdate)))
+select date_trunc('day', sum(age(p.birthdate)))
 from employee e
 join person p on e.person_id = p.person_id 
 where date_part('year', e.hire_date) = 2022
@@ -27,8 +27,11 @@ select
         end
 from employee e 
 join person p on e.person_id = p.person_id 
-left join project p2 on e.employee_id = any(p2.employees_id)
-where e.dismissal_date is not null and p2.employees_id is null
+where e.dismissal_date is not null 
+and not exists (select 1 
+    			from project p2 
+    			where e.employee_id = any(p2.employees_id) 
+       			or e.employee_id = p2.project_manager_id)
 
 
 -- 5) Чему равна сумма полученных платежей от контрагентов из Жуковский, Россия?
@@ -40,6 +43,7 @@ join address a on c.address_id = a.address_id
 join city c2 on a.city_id = c2.city_id 
 join country c3 on c2.country_id = c3.country_id 
 where c2.city_name = 'Жуковский' and c3.country_name = 'Россия'
+and pp.fact_transaction_timestamp is not null
 
 -- 6) Пусть руководитель проекта получает премию в 1% от стоимости завершённого проекта.
 --    Если взять завершённые проекты, какой руководитель проекта получит самый большой бонус?
@@ -60,16 +64,20 @@ where bonus = (select max(bonus) from cte2)
 -- 7) Получите накопительный итог планируемых авансовых платежей на каждый месяц в отдельности.
 --    Выведите в результат те даты планируемых платежей, которые идут после преодоления накопительной суммой значения в 30 000 000.
 
-with cte3 as(
-	select plan_payment_date, amount, sum(amount) over (
-	partition by date_trunc('month', plan_payment_date)
-	order by plan_payment_date) as summ
-	from project_payment pp
-	where payment_type = 'Авансовый')
-select  plan_payment_date, summ
+with cte3 as (
+    select plan_payment_date, amount, sum(amount) over (
+    partition by date_trunc('month', plan_payment_date)
+    order by plan_payment_date) as summ
+    from project_payment pp
+    where payment_type = 'Авансовый')
+select 
+    min(plan_payment_date) as plan_payment_date,
+    max(summ) as summ
 from cte3
 where summ > 30000000
-
+group by date_trunc('month', plan_payment_date)
+order by min(plan_payment_date)
+	
 -- 8) Используя рекурсию, посчитайте сумму фактических окладов сотрудников из структурного подразделения с ID,
 --	  равным 17 и из всех дочерних подразделений.
 --    В результат выведите одно значение суммы.
@@ -82,7 +90,7 @@ with recursive cte4 as (
 	select cs.*, level + 1 as level
 	from cte4
 	join company_structure cs on cs.parent_id = cte4.unit_id)
-select sum(ep.salary) 
+select sum(ep.salary * ep.rate) 
 from cte4
 join position p on cte4.unit_id = p.unit_id
 join employee_position ep on p.position_id = ep.position_id
@@ -111,17 +119,16 @@ with cte5 as ( -- Нумерация платежей по годам
 		rows between 2 preceding and 2 following) as avg_payment
 		from cte6),
 	cte8 as ( -- Сумма скользящих
-		select year, sum(amount) as sum_avg_payment
-		from cte7
-		group by year),
+		select sum(avg_payment) as sum_avg_payment
+		from cte7),
 	cte9 as ( -- Сумма проектов
 		select date_part('year', p.sign_date) as year,
 		sum(p.project_cost) as total_sum
 		from project p
 		group by year)
-select cte9.year, cte9.total_sum  
+select cte9.year, cte9.total_sum
 from cte9
-join cte8 on cte8.year = cte9.year
+join cte8 on 1 = 1
 where cte9.total_sum < cte8.sum_avg_payment 
 
 -- 10) Создайте материализованное представление, которое будет хранить отчёт следующей структуры:
@@ -141,21 +148,21 @@ create materialized view task10 as
 		pp.fact_transaction_timestamp as payment_date 
 		from project_payment pp
 		where pp.fact_transaction_timestamp is not null
-		order by pp.project_id, pp.fact_transaction_timestamp desc)
+		order by pp.project_id, pp.fact_transaction_timestamp desc),
+	cte11 as (
+		select c.customer_id, c.customer_name, string_agg(tow.type_of_work_name, ', ') as works
+		from customer c 
+		join customer_type_of_work ctow on c.customer_id = ctow.customer_id
+		join type_of_work tow on ctow.type_of_work_id = tow.type_of_work_id
+		group by c.customer_id)
 	select p.project_id, p.project_name, cte10.payment_date as last_payment_date,
-	cte10.last_payment, p2.full_fio as manager_fio, c.customer_name, tow.works
+	cte10.last_payment, p2.full_fio as manager_fio, cte11.customer_name, cte11.works
 	from project p
 	join cte10 on p.project_id = cte10.project_id
 	join employee e on p.project_manager_id = e.employee_id
 	join person p2 on e.person_id = p2.person_id 
-	join customer c on p.customer_id = c.customer_id
-	join (select c.customer_id, string_agg(tow.type_of_work_name, ', ') as works
-		from customer c 
-		join customer_type_of_work ctow on c.customer_id = ctow.customer_id
-		join type_of_work tow on ctow.type_of_work_id = tow.type_of_work_id
-		group by c.customer_id) tow on c.customer_id = tow.customer_id
+	join cte11 on p.customer_id = cte11.customer_id
 	order by p.project_id 
-
 
 -- select * from task10;
 
