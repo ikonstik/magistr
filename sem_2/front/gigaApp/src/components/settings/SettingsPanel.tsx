@@ -1,5 +1,8 @@
 import React from "react";
-import type { ModelSettings, Theme } from "../../types";
+import type { ModelSettings } from "../../types";
+import shared from "../../styles/shared.module.css";
+import styles from "./SettingsPanel.module.css";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface SettingsPanelProps {
   isOpen: boolean;
@@ -16,35 +19,34 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   onChange,
   onReset
 }) => {
-  const handleThemeToggle = (theme: Theme) => {
-    onChange({ ...settings, theme });
-  };
-
   if (!isOpen) return null;
 
   return (
-    <div className="settings-overlay" onClick={onClose}>
+    <div className={styles.overlay} onClick={onClose}>
       <div
-        className="settings-panel"
+        className={styles.panel}
         onClick={(e) => {
           e.stopPropagation();
         }}
       >
-        <header className="settings-panel__header">
+        <header className={styles.header}>
           <h2>Настройки</h2>
-          <button className="icon-button" type="button" onClick={onClose}>
+          <button className={shared.iconButton} type="button" onClick={onClose}>
             ✕
           </button>
         </header>
 
-        <div className="settings-panel__body">
-          <label className="field">
-            <span className="field__label">Модель</span>
+        <div className={styles.body}>
+          <label className={shared.field}>
+            <span className={shared.fieldLabel}>Модель</span>
             <select
-              className="input"
+              className={`${shared.input} ${styles.controlInput}`}
               value={settings.model}
               onChange={(e) =>
-                onChange({ ...settings, model: e.target.value as ModelSettings["model"] })
+                onChange({
+                  ...settings,
+                  model: e.target.value as ModelSettings["model"]
+                })
               }
             >
               <option value="GigaChat">GigaChat</option>
@@ -54,8 +56,8 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
             </select>
           </label>
 
-          <label className="field">
-            <span className="field__label">
+          <label className={shared.field}>
+            <span className={shared.fieldLabel}>
               Temperature: {settings.temperature.toFixed(2)}
             </span>
             <input
@@ -70,23 +72,27 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
             />
           </label>
 
-          <label className="field">
-            <span className="field__label">Top-P: {settings.topP.toFixed(2)}</span>
+          <label className={shared.field}>
+            <span className={shared.fieldLabel}>
+              Top-P: {settings.topP.toFixed(2)}
+            </span>
             <input
               type="range"
               min={0}
               max={1}
               step={0.01}
               value={settings.topP}
-              onChange={(e) => onChange({ ...settings, topP: Number(e.target.value) })}
+              onChange={(e) =>
+                onChange({ ...settings, topP: Number(e.target.value) })
+              }
             />
           </label>
 
-          <label className="field">
-            <span className="field__label">Max Tokens</span>
+          <label className={shared.field}>
+            <span className={shared.fieldLabel}>Max Tokens</span>
             <input
               type="number"
-              className="input"
+              className={`${shared.input} ${styles.controlInput}`}
               value={settings.maxTokens}
               onChange={(e) =>
                 onChange({
@@ -97,10 +103,10 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
             />
           </label>
 
-          <label className="field">
-            <span className="field__label">System Prompt</span>
+          <label className={shared.field}>
+            <span className={shared.fieldLabel}>System Prompt</span>
             <textarea
-              className="input settings-panel__system-prompt"
+              className={`${shared.input} ${styles.controlInput} ${styles.systemPrompt}`}
               value={settings.systemPrompt}
               onChange={(e) =>
                 onChange({
@@ -111,36 +117,19 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
             />
           </label>
 
-          <div className="field">
-            <span className="field__label">Тема</span>
-            <div className="theme-toggle">
-              <button
-                type="button"
-                className={`btn theme-toggle__btn ${
-                  settings.theme === "light" ? "theme-toggle__btn--active" : ""
-                }`}
-                onClick={() => handleThemeToggle("light")}
-              >
-                Светлая
-              </button>
-              <button
-                type="button"
-                className={`btn theme-toggle__btn ${
-                  settings.theme === "dark" ? "theme-toggle__btn--active" : ""
-                }`}
-                onClick={() => handleThemeToggle("dark")}
-              >
-                Тёмная
-              </button>
-            </div>
+          <div className={`${shared.field} ${styles.themeField}`}>
+            <ThemeToggle
+              theme={settings.theme}
+              onChange={(theme) => onChange({ ...settings, theme })}
+            />
           </div>
         </div>
 
-        <footer className="settings-panel__footer">
-          <button type="button" className="btn" onClick={onReset}>
+        <footer className={styles.footer}>
+          <button type="button" className={shared.btn} onClick={onReset}>
             Сбросить
           </button>
-          <button type="button" className="btn btn--primary" onClick={onClose}>
+          <button type="button" className={`${shared.btn} ${shared.btnPrimary}`} onClick={onClose}>
             Сохранить
           </button>
         </footer>
@@ -148,4 +137,3 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     </div>
   );
 };
-

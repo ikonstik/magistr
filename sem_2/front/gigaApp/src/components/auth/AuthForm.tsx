@@ -1,5 +1,7 @@
 import React from "react";
 import type { ChatScope } from "../../types";
+import shared from "../../styles/shared.module.css";
+import styles from "./AuthForm.module.css";
 import { ErrorMessage } from "../common/ErrorMessage";
 
 interface AuthFormProps {
@@ -18,29 +20,28 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onAuthenticated }) => {
       return;
     }
     setError(null);
-    // Моковая авторизация
     onAuthenticated();
   };
 
   return (
-    <div className="auth-screen">
-      <form className="auth-form" onSubmit={handleSubmit}>
-        <h1 className="auth-form__title">Вход в GigaChat</h1>
+    <div className={styles.screen}>
+      <form className={styles.form} onSubmit={handleSubmit}>
+        <h1 className={styles.title}>Вход в GigaChat</h1>
 
-        <label className="field">
-          <span className="field__label">Credentials (Base64)</span>
+        <label className={shared.field}>
+          <span className={shared.fieldLabel}>Credentials (Base64)</span>
           <input
             type="password"
-            className="input"
+            className={`${shared.input} ${styles.authInput}`}
             value={credentials}
             onChange={(e) => setCredentials(e.target.value)}
             placeholder="Введите Base64-строку"
           />
         </label>
 
-        <fieldset className="field auth-form__scope">
-          <legend className="field__label">Scope</legend>
-          <label className="radio">
+        <fieldset className={`${shared.field} ${styles.scope}`}>
+          <legend className={shared.fieldLabel}>Scope</legend>
+          <label className={shared.radio}>
             <input
               type="radio"
               name="scope"
@@ -50,7 +51,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onAuthenticated }) => {
             />
             <span>GIGACHAT_API_PERS</span>
           </label>
-          <label className="radio">
+          <label className={shared.radio}>
             <input
               type="radio"
               name="scope"
@@ -60,7 +61,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onAuthenticated }) => {
             />
             <span>GIGACHAT_API_B2B</span>
           </label>
-          <label className="radio">
+          <label className={shared.radio}>
             <input
               type="radio"
               name="scope"
@@ -74,11 +75,13 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onAuthenticated }) => {
 
         {error && <ErrorMessage message={error} />}
 
-        <button type="submit" className="btn btn--primary auth-form__submit">
+        <button
+          type="submit"
+          className={`${shared.btn} ${shared.btnPrimary} ${styles.submit}`}
+        >
           Войти
         </button>
       </form>
     </div>
   );
 };
-

@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "./TypingIndicator.module.css";
 
 interface TypingIndicatorProps {
   isVisible?: boolean;
@@ -12,11 +13,10 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({
   }
 
   return (
-    <div className="typing-indicator">
-      <div className="typing-indicator__dot" />
-      <div className="typing-indicator__dot" />
-      <div className="typing-indicator__dot" />
+    <div className={styles.root}>
+      <div className={styles.dot} />
+      <div className={styles.dot} />
+      <div className={styles.dot} />
     </div>
   );
 };
-

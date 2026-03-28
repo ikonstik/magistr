@@ -1,0 +1,57 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.5);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 40;
+}
+
+.panel {
+  width: min(420px, 100%);
+  background-color: var(--color-bg);
+  padding: 16px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: -12px 0 40px rgba(15, 23, 42, 0.4);
+  min-height: 100%;
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.controlInput {
+  border-radius: 12px;
+}
+
+.systemPrompt {
+  min-height: 80px;
+  border-radius: 12px;
+}
+
+.footer {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.themeField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

@@ -1,30 +1,27 @@
 import React from "react";
 import { Sidebar } from "../sidebar/Sidebar";
 import { ChatWindow } from "../chat/ChatWindow";
-import type { ChatMessage, ChatSummary, ModelSettings } from "../../types";
+import type { ChatSummary, ModelSettings } from "../../types";
+import styles from "./AppLayout.module.css";
 
 interface AppLayoutProps {
   chats: ChatSummary[];
   activeChatId: string | null;
-  messages: ChatMessage[];
   onSelectChat: (id: string) => void;
   onNewChat: () => void;
-  onSendMessage: (text: string) => void;
   onOpenSettings: () => void;
   settings: ModelSettings;
-  isTyping: boolean;
+  onChatLastMessage?: (chatId: string, dateLabel: string) => void;
 }
 
 export const AppLayout: React.FC<AppLayoutProps> = ({
   chats,
   activeChatId,
-  messages,
   onSelectChat,
   onNewChat,
-  onSendMessage,
   onOpenSettings,
   settings,
-  isTyping
+  onChatLastMessage
 }) => {
   const [isSidebarOpenMobile, setIsSidebarOpenMobile] = React.useState(false);
 
@@ -36,10 +33,10 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   const activeChat = chats.find((c) => c.id === activeChatId) ?? chats[0] ?? null;
 
   return (
-    <div className="app-layout">
+    <div className={styles.layout}>
       <aside
-        className={`sidebar-container ${
-          isSidebarOpenMobile ? "sidebar-container--mobile-open" : ""
+        className={`${styles.sidebarContainer} ${
+          isSidebarOpenMobile ? styles.sidebarContainerOpen : ""
         }`}
       >
         <Sidebar
@@ -52,23 +49,20 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 
       {isSidebarOpenMobile && (
         <div
-          className="sidebar-backdrop"
+          className={styles.sidebarBackdrop}
           onClick={() => setIsSidebarOpenMobile(false)}
         />
       )}
 
-      <main className="chat-container">
+      <main className={styles.chatContainer}>
         <ChatWindow
           chat={activeChat}
-          messages={messages.filter((m) => m.chatId === activeChat?.id)}
           onOpenSettings={onOpenSettings}
-          isTyping={isTyping}
           onOpenSidebarMobile={() => setIsSidebarOpenMobile(true)}
           settings={settings}
-          onSendMessage={onSendMessage}
+          onChatLastMessage={onChatLastMessage}
         />
       </main>
     </div>
   );
 };
-

@@ -1,0 +1,14 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background-color: rgba(248, 113, 113, 0.15);
+  color: var(--color-error);
+  font-size: 13px;
+}
+
+.icon {
+  font-size: 14px;
+}

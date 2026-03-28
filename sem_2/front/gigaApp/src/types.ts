@@ -8,15 +8,14 @@ export interface ChatSummary {
   lastMessageAt: string;
 }
 
-export type MessageVariant = "user" | "assistant";
+export type MessageRole = "user" | "assistant";
 
+/** Сообщение в чате (локальное состояние в ChatWindow) */
 export interface ChatMessage {
   id: string;
-  chatId: string;
-  author: string;
-  variant: MessageVariant;
+  role: MessageRole;
   content: string;
-  createdAt: string;
+  timestamp: string;
 }
 
 export interface ModelSettings {

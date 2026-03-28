@@ -1,21 +1,28 @@
 import React from "react";
+import shared from "../../styles/shared.module.css";
+import styles from "./InputArea.module.css";
 
 interface InputAreaProps {
   disabled?: boolean;
-  isGenerating: boolean;
+  isLoading: boolean;
   onSend: (value: string) => void;
+  onStop: () => void;
 }
 
 export const InputArea: React.FC<InputAreaProps> = ({
   disabled,
-  isGenerating,
-  onSend
+  isLoading,
+  onSend,
+  onStop
 }) => {
   const [value, setValue] = React.useState("");
 
+  const trimmed = value.trim();
+  const inputLocked = Boolean(disabled || isLoading);
+  const canSend = Boolean(trimmed && !disabled && !isLoading);
+
   const handleSend = () => {
-    const trimmed = value.trim();
-    if (!trimmed) return;
+    if (!canSend) return;
     onSend(trimmed);
     setValue("");
   };
@@ -23,7 +30,7 @@ export const InputArea: React.FC<InputAreaProps> = ({
   const handleKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      if (!disabled && value.trim()) {
+      if (canSend) {
         handleSend();
       }
     }
@@ -32,42 +39,46 @@ export const InputArea: React.FC<InputAreaProps> = ({
   const rows = Math.min(5, Math.max(1, value.split("\n").length));
 
   return (
-    <div className="input-area">
+    <div className={styles.root}>
       <button
         type="button"
-        className="icon-button input-area__attach"
+        className={`${shared.iconButton} ${styles.attach}`}
         aria-label="Прикрепить изображение"
         disabled={disabled}
       >
         📎
       </button>
       <textarea
-        className="input-area__textarea"
+        className={styles.textarea}
         placeholder="Введите сообщение..."
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
         rows={rows}
-        disabled={disabled}
+        disabled={inputLocked}
+        aria-busy={isLoading}
       />
-      <div className="input-area__actions">
-        <button
-          type="button"
-          className="btn"
-          disabled={disabled || !isGenerating}
-        >
-          Стоп
-        </button>
-        <button
-          type="button"
-          className="btn btn--primary"
-          disabled={disabled || !value.trim()}
-          onClick={handleSend}
-        >
-          Отправить
-        </button>
+      <div className={styles.actions}>
+        {isLoading ? (
+          <button
+            type="button"
+            className={`${shared.btn} ${styles.primaryAction}`}
+            disabled={disabled}
+            onClick={onStop}
+          >
+            Стоп
+          </button>
+        ) : (
+          <button
+            type="button"
+            className={`${shared.btn} ${shared.btnPrimary} ${styles.primaryAction}`}
+            disabled={disabled || !trimmed}
+            onClick={handleSend}
+          >
+            Отправить
+          </button>
+        )}
       </div>
     </div>
   );
 };
-

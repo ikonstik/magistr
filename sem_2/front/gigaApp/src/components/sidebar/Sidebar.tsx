@@ -1,5 +1,7 @@
 import React from "react";
 import type { ChatSummary } from "../../types";
+import shared from "../../styles/shared.module.css";
+import styles from "./Sidebar.module.css";
 
 interface SidebarProps {
   chats: ChatSummary[];
@@ -21,42 +23,46 @@ export const Sidebar: React.FC<SidebarProps> = ({
   );
 
   return (
-    <div className="sidebar">
-      <div className="sidebar__header">
-        <button className="btn btn--primary sidebar__new-chat" onClick={onNewChat}>
-          <span className="sidebar__new-chat-icon">+</span>
+    <div className={styles.sidebar}>
+      <div className={styles.header}>
+        <button
+          type="button"
+          className={`${shared.btn} ${shared.btnPrimary} ${styles.newChat}`}
+          onClick={onNewChat}
+        >
+          <span className={styles.newChatIcon}>+</span>
           <span>Новый чат</span>
         </button>
       </div>
 
-      <div className="sidebar__search">
+      <div className={styles.search}>
         <input
           type="search"
-          className="input"
+          className={`${shared.input} ${styles.searchField}`}
           placeholder="Поиск по чатам"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
 
-      <ul className="sidebar__chat-list">
+      <ul className={styles.chatList}>
         {filteredChats.map((chat) => (
           <li
             key={chat.id}
-            className={`chat-item ${
-              chat.id === activeChatId ? "chat-item--active" : ""
+            className={`${styles.chatItem} ${
+              chat.id === activeChatId ? styles.chatItemActive : ""
             }`}
             onClick={() => onSelectChat(chat.id)}
           >
-            <div className="chat-item__main">
-              <div className="chat-item__title" title={chat.title}>
+            <div className={styles.chatItemMain}>
+              <div className={styles.chatItemTitle} title={chat.title}>
                 {chat.title}
               </div>
-              <div className="chat-item__date">{chat.lastMessageAt}</div>
+              <div className={styles.chatItemDate}>{chat.lastMessageAt}</div>
             </div>
-            <div className="chat-item__actions">
+            <div className={styles.chatItemActions}>
               <button
-                className="icon-button"
+                className={shared.iconButton}
                 type="button"
                 aria-label="Редактировать чат"
                 onClick={(e) => e.stopPropagation()}
@@ -64,7 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 ✏️
               </button>
               <button
-                className="icon-button icon-button--danger"
+                className={`${shared.iconButton} ${shared.iconButtonDanger}`}
                 type="button"
                 aria-label="Удалить чат"
                 onClick={(e) => e.stopPropagation()}
@@ -78,4 +84,3 @@ export const Sidebar: React.FC<SidebarProps> = ({
     </div>
   );
 };
-

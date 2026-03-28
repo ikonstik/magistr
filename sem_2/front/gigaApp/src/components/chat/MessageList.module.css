@@ -1,0 +1,28 @@
+.list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.endAnchor {
+  height: 1px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.typingWrap {
+  width: fit-content;
+  max-width: 100%;
+  align-self: flex-start;
+}
+
+.typingWrapAfterUser {
+  align-self: flex-end;
+}

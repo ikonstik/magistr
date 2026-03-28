@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "./ErrorMessage.module.css";
 
 interface ErrorMessageProps {
   message: string;
@@ -6,10 +7,9 @@ interface ErrorMessageProps {
 
 export const ErrorMessage: React.FC<ErrorMessageProps> = ({ message }) => {
   return (
-    <div className="error-message" role="alert">
-      <span className="error-message__icon">⚠</span>
-      <span className="error-message__text">{message}</span>
+    <div className={styles.root} role="alert">
+      <span className={styles.icon}>⚠</span>
+      <span>{message}</span>
     </div>
   );
 };
-
