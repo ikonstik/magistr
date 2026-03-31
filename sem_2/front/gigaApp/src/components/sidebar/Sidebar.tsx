@@ -1,26 +1,39 @@
 import React from "react";
-import type { ChatSummary } from "../../types";
 import shared from "../../styles/shared.module.css";
 import styles from "./Sidebar.module.css";
+import { useChatStore } from "../../store/chatStore";
 
 interface SidebarProps {
-  chats: ChatSummary[];
-  activeChatId: string | null;
   onSelectChat: (id: string) => void;
-  onNewChat: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({
-  chats,
-  activeChatId,
-  onSelectChat,
-  onNewChat
-}) => {
+export const Sidebar: React.FC<SidebarProps> = ({ onSelectChat }) => {
+  const { state, createChat, renameChat, deleteChat } = useChatStore();
   const [query, setQuery] = React.useState("");
+  const [editingId, setEditingId] = React.useState<string | null>(null);
+  const [draftTitle, setDraftTitle] = React.useState("");
 
-  const filteredChats = chats.filter((chat) =>
-    chat.title.toLowerCase().includes(query.toLowerCase())
-  );
+  const filteredChats = state.chats.filter((chat) => {
+    const q = query.toLowerCase().trim();
+    if (!q) return true;
+    const messages = state.messagesByChat[chat.id] ?? [];
+    const lastMessage = messages[messages.length - 1]?.content ?? "";
+    return (
+      chat.title.toLowerCase().includes(q) ||
+      lastMessage.toLowerCase().includes(q)
+    );
+  });
+
+  const handleCreate = () => {
+    const id = createChat();
+    onSelectChat(id);
+  };
+
+  const handleDelete = (chatId: string) => {
+    const ok = window.confirm("Удалить чат без возможности восстановления?");
+    if (!ok) return;
+    deleteChat(chatId);
+  };
 
   return (
     <div className={styles.sidebar}>
@@ -28,7 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <button
           type="button"
           className={`${shared.btn} ${shared.btnPrimary} ${styles.newChat}`}
-          onClick={onNewChat}
+          onClick={handleCreate}
         >
           <span className={styles.newChatIcon}>+</span>
           <span>Новый чат</span>
@@ -50,22 +63,53 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <li
             key={chat.id}
             className={`${styles.chatItem} ${
-              chat.id === activeChatId ? styles.chatItemActive : ""
+              chat.id === state.activeChatId ? styles.chatItemActive : ""
             }`}
             onClick={() => onSelectChat(chat.id)}
           >
             <div className={styles.chatItemMain}>
-              <div className={styles.chatItemTitle} title={chat.title}>
-                {chat.title}
+              {editingId === chat.id ? (
+                <input
+                  autoFocus
+                  value={draftTitle}
+                  className={`${shared.input} ${styles.titleInput}`}
+                  onChange={(e) => setDraftTitle(e.target.value)}
+                  onBlur={() => {
+                    renameChat(chat.id, draftTitle);
+                    setEditingId(null);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      renameChat(chat.id, draftTitle);
+                      setEditingId(null);
+                    }
+                    if (e.key === "Escape") {
+                      setEditingId(null);
+                    }
+                  }}
+                />
+              ) : (
+                <div className={styles.chatItemTitle} title={chat.title}>
+                  {chat.title}
+                </div>
+              )}
+              <div className={styles.chatItemDate}>
+                {(() => {
+                  const list = state.messagesByChat[chat.id] ?? [];
+                  return list[list.length - 1]?.timestamp ?? chat.updatedAt;
+                })()}
               </div>
-              <div className={styles.chatItemDate}>{chat.lastMessageAt}</div>
             </div>
             <div className={styles.chatItemActions}>
               <button
                 className={shared.iconButton}
                 type="button"
                 aria-label="Редактировать чат"
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEditingId(chat.id);
+                  setDraftTitle(chat.title);
+                }}
               >
                 ✏️
               </button>
@@ -73,7 +117,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className={`${shared.iconButton} ${shared.iconButtonDanger}`}
                 type="button"
                 aria-label="Удалить чат"
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(chat.id);
+                }}
               >
                 🗑
               </button>

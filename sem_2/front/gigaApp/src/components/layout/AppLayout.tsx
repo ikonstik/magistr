@@ -1,68 +1,83 @@
 import React from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Sidebar } from "../sidebar/Sidebar";
 import { ChatWindow } from "../chat/ChatWindow";
-import type { ChatSummary, ModelSettings } from "../../types";
+import { SettingsPanel } from "../settings/SettingsPanel";
+import { useChatStore } from "../../store/chatStore";
 import styles from "./AppLayout.module.css";
 
-interface AppLayoutProps {
-  chats: ChatSummary[];
-  activeChatId: string | null;
-  onSelectChat: (id: string) => void;
-  onNewChat: () => void;
-  onOpenSettings: () => void;
-  settings: ModelSettings;
-  onChatLastMessage?: (chatId: string, dateLabel: string) => void;
-}
-
-export const AppLayout: React.FC<AppLayoutProps> = ({
-  chats,
-  activeChatId,
-  onSelectChat,
-  onNewChat,
-  onOpenSettings,
-  settings,
-  onChatLastMessage
-}) => {
+export const AppLayout: React.FC = () => {
   const [isSidebarOpenMobile, setIsSidebarOpenMobile] = React.useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { state, selectChat, updateSettings } = useChatStore();
 
-  const handleSelectChat = (id: string) => {
-    onSelectChat(id);
+  React.useEffect(() => {
+    if (!id) {
+      return;
+    }
+    if (state.chats.some((chat) => chat.id === id)) {
+      selectChat(id);
+      return;
+    }
+    navigate("/", { replace: true });
+  }, [id, state.chats, selectChat, navigate]);
+
+  React.useEffect(() => {
+    if (!state.activeChatId && state.chats.length > 0) {
+      selectChat(state.chats[0].id);
+    }
+  }, [state.activeChatId, state.chats, selectChat]);
+
+  const handleSelectChat = (chatId: string) => {
+    selectChat(chatId);
+    navigate(`/chat/${chatId}`);
     setIsSidebarOpenMobile(false);
   };
 
-  const activeChat = chats.find((c) => c.id === activeChatId) ?? chats[0] ?? null;
-
   return (
-    <div className={styles.layout}>
-      <aside
-        className={`${styles.sidebarContainer} ${
-          isSidebarOpenMobile ? styles.sidebarContainerOpen : ""
-        }`}
-      >
-        <Sidebar
-          chats={chats}
-          activeChatId={activeChat?.id ?? null}
-          onSelectChat={handleSelectChat}
-          onNewChat={onNewChat}
-        />
-      </aside>
+    <>
+      <div className={styles.layout}>
+        <aside
+          className={`${styles.sidebarContainer} ${
+            isSidebarOpenMobile ? styles.sidebarContainerOpen : ""
+          }`}
+        >
+          <Sidebar onSelectChat={handleSelectChat} />
+        </aside>
 
-      {isSidebarOpenMobile && (
-        <div
-          className={styles.sidebarBackdrop}
-          onClick={() => setIsSidebarOpenMobile(false)}
-        />
-      )}
+        {isSidebarOpenMobile && (
+          <div
+            className={styles.sidebarBackdrop}
+            onClick={() => setIsSidebarOpenMobile(false)}
+          />
+        )}
 
-      <main className={styles.chatContainer}>
-        <ChatWindow
-          chat={activeChat}
-          onOpenSettings={onOpenSettings}
-          onOpenSidebarMobile={() => setIsSidebarOpenMobile(true)}
-          settings={settings}
-          onChatLastMessage={onChatLastMessage}
-        />
-      </main>
-    </div>
+        <main className={styles.chatContainer}>
+          <ChatWindow
+            onOpenSettings={() => setIsSettingsOpen(true)}
+            onOpenSidebarMobile={() => setIsSidebarOpenMobile(true)}
+          />
+        </main>
+      </div>
+
+      <SettingsPanel
+        isOpen={isSettingsOpen}
+        settings={state.settings}
+        onClose={() => setIsSettingsOpen(false)}
+        onChange={updateSettings}
+        onReset={() =>
+          updateSettings({
+            model: "GigaChat",
+            temperature: 0.7,
+            topP: 0.9,
+            maxTokens: 2048,
+            systemPrompt: "You are a helpful GigaChat assistant.",
+            theme: "light"
+          })
+        }
+      />
+    </>
   );
 };

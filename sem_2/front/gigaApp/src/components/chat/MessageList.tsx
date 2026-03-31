@@ -1,11 +1,11 @@
 import React from "react";
-import type { ChatMessage } from "../../types";
+import type { Message } from "../../types";
 import { Message } from "./Message";
 import { TypingIndicator } from "./TypingIndicator";
 import styles from "./MessageList.module.css";
 
 interface MessageListProps {
-  messages: ChatMessage[];
+  messages: Message[];
   isLoading: boolean;
 }
 

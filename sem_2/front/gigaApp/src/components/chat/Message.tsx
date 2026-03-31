@@ -1,6 +1,6 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
-import type { ChatMessage } from "../../types";
+import type { Message as ChatMessage } from "../../types";
 import shared from "../../styles/shared.module.css";
 import styles from "./Message.module.css";
 

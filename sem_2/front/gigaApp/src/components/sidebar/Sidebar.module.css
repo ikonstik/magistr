@@ -81,6 +81,12 @@
   text-overflow: ellipsis;
 }
 
+.titleInput {
+  min-height: 30px;
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
 .chatItemDate {
   margin-top: 2px;
   font-size: 11px;
