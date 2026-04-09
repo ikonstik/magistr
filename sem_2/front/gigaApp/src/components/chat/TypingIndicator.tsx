@@ -1,22 +1,14 @@
-import React from "react";
-import styles from "./TypingIndicator.module.css";
+// components/chat/TypingIndicator.tsx
+import React from 'react'
+import styles from './TypingIndicator.module.css'
 
-interface TypingIndicatorProps {
-  isVisible?: boolean;
+export const TypingIndicator: React.FC = () => {
+	return (
+		<div className={styles.typing}>
+			<span className={styles.dot}>.</span>
+			<span className={styles.dot}>.</span>
+			<span className={styles.dot}>.</span>
+			<span className={styles.text}>GigaChat печатает</span>
+		</div>
+	)
 }
-
-export const TypingIndicator: React.FC<TypingIndicatorProps> = ({
-  isVisible = true
-}) => {
-  if (!isVisible) {
-    return null;
-  }
-
-  return (
-    <div className={styles.root}>
-      <div className={styles.dot} />
-      <div className={styles.dot} />
-      <div className={styles.dot} />
-    </div>
-  );
-};

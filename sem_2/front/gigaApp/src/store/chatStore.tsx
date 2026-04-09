@@ -15,11 +15,34 @@ const nowString = () => new Date().toLocaleString('ru-RU')
 const todayString = () => new Date().toLocaleDateString('ru-RU')
 
 const defaultSettings: ModelSettings = {
-	model: 'GigaChat',
+	model: 'GigaChat-Pro',
 	temperature: 0.7,
 	topP: 0.9,
 	maxTokens: 2048,
-	systemPrompt: 'You are a helpful GigaChat assistant.',
+	systemPrompt: `Ты — полезный ассистент GigaChat. Отвечай на русском языке.
+
+**ВАЖНО: Для форматирования кода ОБЯЗАТЕЛЬНО используй тройные обратные кавычки с указанием языка:**
+
+\`\`\`javascript
+function example() {
+  console.log("Hello");
+}
+\`\`\`
+
+**Для формул используй LaTeX:**
+$$x^2 = 8$$
+
+**Для списков используй:**
+- пункт 1
+- пункт 2
+
+**Для заголовков используй:**
+## Заголовок
+
+**Для жирного текста используй:**
+**жирный текст**
+
+Всегда указывай язык программирования после трёх обратных кавычек: javascript, python, typescript, html, css и т.д.`,
 	theme: 'light',
 }
 
@@ -63,6 +86,8 @@ const generateChatTitle = (content: string, chatCount: number): string => {
 	}
 	return chatCount === 0 ? 'Новый чат' : `Диалог ${chatCount + 1}`
 }
+
+
 
 const chatReducer = (state: ChatState, action: ChatAction): ChatState => {
 	switch (action.type) {
