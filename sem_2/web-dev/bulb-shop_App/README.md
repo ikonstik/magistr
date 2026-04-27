@@ -1,16 +1,30 @@
-# React + Vite
+# 🛒 Магазин лампочек — интернет-магазин светотехники
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Интернет-магазин для завода лампочек с возможностью просмотра каталога, добавления товаров в корзину, оформления заказа и отслеживания доставки.
 
-Currently, two official plugins are available:
+## 🚀 Стек технологий
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **React 19** — пользовательский интерфейс
+- **Redux Toolkit** — управление состоянием
+- **Material UI (MUI)** — компоненты и стили
+- **React Router DOM v7** — маршрутизация
+- **Vite** — сборка проекта
 
-## React Compiler
+## 📦 Установка и запуск
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+# Клонирование репозитория
+git clone https://github.com/your-repo/bulb-shop.git
+cd bulb-shop
 
-## Expanding the ESLint configuration
+# Установка зависимостей
+npm install
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Запуск в режиме разработки
+npm run dev
+
+# Сборка для продакшена
+npm run build
+
+# Предпросмотр собранного проекта
+npm run preview
