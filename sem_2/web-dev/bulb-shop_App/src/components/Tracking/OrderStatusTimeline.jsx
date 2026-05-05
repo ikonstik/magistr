@@ -37,15 +37,24 @@ const getStatusColor = status => {
 }
 
 const formatDate = dateString => {
-	const date = new Date(dateString)
-	return date.toLocaleString('ru-RU', {
-		day: '2-digit',
-		month: '2-digit',
-		hour: '2-digit',
-		minute: '2-digit',
-	})
-}
+	if (!dateString) return 'Дата неизвестна'
 
+	try {
+		const date = new Date(dateString)
+		// Проверяем, корректная ли дата
+		if (isNaN(date.getTime())) {
+			return 'Дата неизвестна'
+		}
+		return date.toLocaleString('ru-RU', {
+			day: '2-digit',
+			month: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit',
+		})
+	} catch (error) {
+		return 'Дата неизвестна'
+	}
+}
 const OrderStatusTimeline = ({ history }) => {
 	if (!history || history.length === 0) {
 		return null
@@ -65,7 +74,7 @@ const OrderStatusTimeline = ({ history }) => {
 							variant='body2'
 							color='text.secondary'
 						>
-							{formatDate(event.timestamp)}
+							{formatDate(event.changed_at)}
 						</TimelineOppositeContent>
 						<TimelineSeparator>
 							<TimelineDot color={getStatusColor(event.status)}>

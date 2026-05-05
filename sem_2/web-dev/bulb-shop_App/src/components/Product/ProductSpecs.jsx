@@ -7,10 +7,16 @@ import {
 	Circle,
 	Timeline,
 	EnergySavingsLeaf,
+	Article,
 } from '@mui/icons-material'
 
 const ProductSpecs = ({ product }) => {
 	const specs = [
+		{
+			label: 'Артикул',
+			value: product.sku,
+			icon: <Article fontSize='small' />,
+		},
 		{
 			label: 'Тип лампы',
 			value: product.type,
@@ -26,26 +32,6 @@ const ProductSpecs = ({ product }) => {
 			value: product.socket,
 			icon: <Circle fontSize='small' />,
 		},
-		{
-			label: 'Цветовая температура',
-			value: product.colorTemp,
-			icon: <Opacity fontSize='small' />,
-		},
-		{
-			label: 'Световой поток',
-			value: product.brightness,
-			icon: <WbIncandescent fontSize='small' />,
-		},
-		{
-			label: 'Срок службы',
-			value: product.lifeTime,
-			icon: <Timeline fontSize='small' />,
-		},
-		{
-			label: 'Класс энергоэффективности',
-			value: product.energyClass,
-			icon: <EnergySavingsLeaf fontSize='small' />,
-		},
 	]
 
 	return (
@@ -54,10 +40,10 @@ const ProductSpecs = ({ product }) => {
 				Характеристики
 			</Typography>
 			<Divider sx={{ mb: 2 }} />
-			<Grid container spacing={2}>
+			<Grid container spacing={4}>
 				{specs.map((spec, index) => (
-					<Grid item xs={12} sm={6} key={index}>
-						<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+					<Grid xs={12} sm={6} key={index}>
+						<Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
 							<Box sx={{ color: 'text.secondary' }}>{spec.icon}</Box>
 							<Typography
 								variant='body2'

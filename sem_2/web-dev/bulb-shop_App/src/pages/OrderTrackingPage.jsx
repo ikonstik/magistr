@@ -117,7 +117,7 @@ const OrderTrackingPage = () => {
 			{/* Блок "Вам может понравиться" - 3 случайных товара */}
 			<Box sx={{ width: '100%', mt: 4 }}>
 				{productsLoading ? (
-					<Typography textAlign='center' py={4}>
+					<Typography py={4}>
 						Загрузка рекомендаций...
 					</Typography>
 				) : (

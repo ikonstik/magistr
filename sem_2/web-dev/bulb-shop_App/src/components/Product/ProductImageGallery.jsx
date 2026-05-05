@@ -39,7 +39,7 @@ const ProductImageGallery = ({ images, mainImage }) => {
 			{allImages.length > 1 && (
 				<Grid container spacing={1}>
 					{allImages.map((img, index) => (
-						<Grid item xs={3} key={index}>
+						<Grid xs={3} key={index}>
 							<Paper
 								sx={{
 									p: 1,

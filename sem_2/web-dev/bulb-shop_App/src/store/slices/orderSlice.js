@@ -1,27 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { orderApi } from '../../services/api'
 
-// Мок-функция отправки заказа (позже заменить на реальный API)
+// Асинхронный thunk для отправки заказа
 export const submitOrder = createAsyncThunk(
 	'order/submit',
 	async (orderData, { rejectWithValue }) => {
 		try {
-			// TODO: заменить на реальный запрос к бэкенду
-			// const response = await fetch('http://localhost:8002/api/v1/orders', {
-			//   method: 'POST',
-			//   headers: { 'Content-Type': 'application/json' },
-			//   body: JSON.stringify(orderData),
-			// });
-
-			// Мок-ответ
-			return new Promise(resolve => {
-				setTimeout(() => {
-					resolve({
-						success: true,
-						orderId: `ORD-${Math.floor(Math.random() * 90000) + 10000}`,
-						trackingCode: `TRK-${Math.floor(Math.random() * 90000) + 10000}`,
-					})
-				}, 1500)
-			})
+			const response = await orderApi.createOrder(orderData)
+			return {
+				success: true,
+				orderId: response.id,
+				trackingCode: response.tracking_code,
+				order: response,
+			}
 		} catch (error) {
 			return rejectWithValue(error.message)
 		}

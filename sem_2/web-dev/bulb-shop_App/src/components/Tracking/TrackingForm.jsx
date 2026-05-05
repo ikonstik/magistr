@@ -42,7 +42,7 @@ const TrackingForm = ({ initialCode, onSubmit, loading }) => {
 					value={trackingCode}
 					onChange={e => setTrackingCode(e.target.value)}
 					disabled={loading}
-					InputProps={{
+					slotProps={{
 						startAdornment: (
 							<InputAdornment position='start'>
 								<Search color='action' />

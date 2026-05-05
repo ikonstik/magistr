@@ -22,7 +22,7 @@ const AddressForm = ({ formData, onChange }) => {
 			</Typography>
 
 			<Grid container spacing={2}>
-				<Box item sx={{ width: 250 }}>
+				<Box sx={{ width: 250 }}>
 					<TextField
 						fullWidth
 						label='Имя'
@@ -31,7 +31,7 @@ const AddressForm = ({ formData, onChange }) => {
 						required
 					/>
 				</Box>
-				<Box item sx={{ width: 250 }}>
+				<Box sx={{ width: 250 }}>
 					<TextField
 						fullWidth
 						label='Фамилия'
@@ -40,7 +40,7 @@ const AddressForm = ({ formData, onChange }) => {
 						required
 					/>
 				</Box>
-				<Box item sx={{ width: 250 }}>
+				<Box sx={{ width: 250 }}>
 					<TextField
 						fullWidth
 						label='Email'
@@ -51,7 +51,7 @@ const AddressForm = ({ formData, onChange }) => {
 						placeholder='example@mail.ru'
 					/>
 				</Box>
-				<Box item sx={{ width: 250 }}>
+				<Box sx={{ width: 250 }}>
 					<TextField
 						fullWidth
 						label='Телефон'
@@ -61,7 +61,7 @@ const AddressForm = ({ formData, onChange }) => {
 						placeholder='+7 (XXX) XXX-XX-XX'
 					/>
 				</Box>
-				<Box item sx={{ width: 515 }}>
+				<Box sx={{ width: 515 }}>
 					<TextField
 						fullWidth
 						label='Адрес доставки'
@@ -73,7 +73,7 @@ const AddressForm = ({ formData, onChange }) => {
 						rows={2}
 					/>
 				</Box>
-				<Box item sx={{ width: 250 }}>
+				<Box sx={{ width: 250 }}>
 					<TextField
 						fullWidth
 						label='Индекс'
@@ -82,13 +82,12 @@ const AddressForm = ({ formData, onChange }) => {
 						placeholder='123456'
 					/>
 				</Box>
-				<Box item sx={{ width: 250 }}>
+				<Box sx={{ width: 250 }}>
 					<TextField
 						fullWidth
 						label='Страна'
 						value={formData.country}
 						onChange={handleChange('country')}
-						defaultValue='Россия'
 					/>
 				</Box>
 			</Grid>

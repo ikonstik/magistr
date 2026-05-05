@@ -225,28 +225,28 @@ const ProductPage = () => {
 							Основные характеристики:
 						</Typography>
 						<Grid container spacing={1}>
-							<Grid item xs={4}>
+							<Grid xs={4}>
 								<Typography variant='body2' color='text.secondary'>
 									Тип:
 								</Typography>
 							</Grid>
-							<Grid item xs={8}>
+							<Grid xs={8}>
 								<Typography variant='body2'>{product.type}</Typography>
 							</Grid>
-							<Grid item xs={4}>
+							<Grid xs={4}>
 								<Typography variant='body2' color='text.secondary'>
 									Мощность:
 								</Typography>
 							</Grid>
-							<Grid item xs={8}>
+							<Grid xs={8}>
 								<Typography variant='body2'>{product.wattage} Вт</Typography>
 							</Grid>
-							<Grid item xs={4}>
+							<Grid xs={4}>
 								<Typography variant='body2' color='text.secondary'>
 									Цоколь:
 								</Typography>
 							</Grid>
-							<Grid item xs={8}>
+							<Grid xs={8}>
 								<Typography variant='body2'>{product.socket}</Typography>
 							</Grid>
 						</Grid>
@@ -312,7 +312,7 @@ const ProductPage = () => {
 				<Typography variant='h6' gutterBottom>
 					Описание товара
 				</Typography>
-				<Typography variant='body1' paragraph>
+				<Typography variant='h6'>
 					{product.fullDescription || product.description}
 				</Typography>
 			</Paper>

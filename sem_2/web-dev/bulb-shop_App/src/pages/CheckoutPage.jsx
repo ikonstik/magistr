@@ -185,7 +185,7 @@ const CheckoutPage = () => {
 						minWidth: { xs: '100%', md: '300px' },
 					}}
 				>
-					<Grid item xs={12} md={9}>
+					<Grid xs={12} md={9}>
 						{activeStep === 0 && (
 							<AddressForm formData={formData} onChange={handleFormChange} />
 						)}
@@ -221,7 +221,7 @@ const CheckoutPage = () => {
 						minWidth: { xs: '100%', md: '300px' },
 					}}
 				>
-					<Grid item xs={12} md={5}>
+					<Grid xs={12} md={5}>
 						<OrderSummary
 							cartItems={cartItems}
 							totalAmount={totalAmount}

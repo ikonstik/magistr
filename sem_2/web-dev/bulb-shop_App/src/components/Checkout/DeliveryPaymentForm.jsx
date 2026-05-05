@@ -20,7 +20,7 @@ import { LocalShipping, Payment } from '@mui/icons-material'
 const deliveryCompanies = [
 	'СДЭК',
 	'Почта России',
-	'Курьерская доставка',
+	'Курьер',
 	'Самовывоз',
 ]
 const cities = [
@@ -70,7 +70,7 @@ const DeliveryPaymentForm = ({ formData, onChange }) => {
 			</Typography>
 
 			<Grid container spacing={2}>
-				<Grid item sx={{ width: 250 }}>
+				<Grid sx={{ width: 250 }}>
 					<FormControl fullWidth>
 						<InputLabel>Транспортная компания</InputLabel>
 						<Select
@@ -87,7 +87,7 @@ const DeliveryPaymentForm = ({ formData, onChange }) => {
 					</FormControl>
 				</Grid>
 
-				<Grid item sx={{ width: 250 }}>
+				<Grid sx={{ width: 250 }}>
 					<FormControl fullWidth>
 						<InputLabel>Город</InputLabel>
 						<Select
@@ -106,7 +106,7 @@ const DeliveryPaymentForm = ({ formData, onChange }) => {
 
 				{formData.deliveryMethod &&
 					formData.deliveryMethod !== 'Курьерская доставка' && (
-						<Grid item sx={{ width: 515 }}>
+						<Grid sx={{ width: 515 }}>
 							<FormControl fullWidth>
 								<InputLabel>Пункт выдачи</InputLabel>
 								<Select
@@ -125,7 +125,7 @@ const DeliveryPaymentForm = ({ formData, onChange }) => {
 					)}
 
 				{formData.deliveryMethod === 'Курьерская доставка' && (
-					<Grid item xs={12}>
+					<Grid xs={12}>
 						<Alert severity='info' sx={{ mt: 1 }}>
 							Курьер доставит заказ по указанному адресу в течение 1-3 дней
 						</Alert>
@@ -145,24 +145,19 @@ const DeliveryPaymentForm = ({ formData, onChange }) => {
 				onChange={handlePaymentMethodChange}
 			>
 				<FormControlLabel
-					value='card_online'
+					value='онлайн'
 					control={<Radio />}
 					label='Онлайн картой (на сайте)'
 				/>
 				<FormControlLabel
-					value='card_delivery'
+					value='карта при получении'
 					control={<Radio />}
 					label='Картой при получении'
 				/>
 				<FormControlLabel
-					value='cash'
+					value='наличные'
 					control={<Radio />}
 					label='Наличными при получении'
-				/>
-				<FormControlLabel
-					value='sbp'
-					control={<Radio />}
-					label='СБП (Система быстрых платежей)'
 				/>
 			</RadioGroup>
 		</Paper>

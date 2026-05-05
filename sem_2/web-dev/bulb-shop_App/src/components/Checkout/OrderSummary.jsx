@@ -141,7 +141,6 @@ const OrderSummary = ({
 			<Typography
 				variant='caption'
 				color='text.secondary'
-				textAlign='center'
 				display='block'
 			>
 				Нажимая кнопку {getButtonText()}, вы соглашаетесь с условиями оферты

@@ -115,7 +115,7 @@ const CartItemRow = ({ item }) => {
 						size='small'
 						value={item.quantity}
 						onChange={e => handleQuantityChange(parseInt(e.target.value) || 1)}
-						inputProps={{
+						slotProps={{
 							style: { textAlign: 'center', width: 50 },
 							min: 1,
 							max: item.stock,

@@ -44,7 +44,7 @@ const QuantitySelector = ({
 				value={quantity}
 				onChange={handleChange}
 				sx={{width: 80}}
-				inputProps={{
+				slotProps={{
 					style: { textAlign: 'center', width: 150 },
 					min: min,
 					max: max,
