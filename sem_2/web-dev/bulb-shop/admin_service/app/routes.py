@@ -8,8 +8,8 @@ from database import get_db
 router = APIRouter(prefix="/api/admin", tags=["Admin"])
 
 @router.post("/login", response_model=TokenResponse)
-def admin_login(login_data: AdminLogin, db: Session = Depends(get_db)):
-    admin = db.query(Admin).filter(Admin.login == login_data.login).first()
+async def admin_login(login_data: AdminLogin, db: Session = Depends(get_db)):
+    admin = await db.query(Admin).filter(Admin.login == login_data.login).first()
     if not admin or not verify_password(login_data.password, admin.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

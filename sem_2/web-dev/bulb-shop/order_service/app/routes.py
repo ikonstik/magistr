@@ -59,8 +59,8 @@ async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
     return result
 
 @router.get("/orders/{order_id}", response_model=OrderResponse)
-def get_order(order_id: str, db: Session = Depends(get_db)):
-    order = db.query(Order).filter(Order.id == order_id).first()
+async def get_order(order_id: str, db: Session = Depends(get_db)):
+    order = await db.query(Order).filter(Order.id == order_id).first()
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
     
@@ -71,8 +71,8 @@ def get_order(order_id: str, db: Session = Depends(get_db)):
     return result
 
 @router.get("/orders/track/{tracking_code}", response_model=OrderTrackingResponse)
-def track_order(tracking_code: str, db: Session = Depends(get_db)):
-    order = db.query(Order).filter(Order.tracking_code == tracking_code).first()
+async def track_order(tracking_code: str, db: Session = Depends(get_db)):
+    order = await db.query(Order).filter(Order.tracking_code == tracking_code).first()
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
     
@@ -90,14 +90,14 @@ def track_order(tracking_code: str, db: Session = Depends(get_db)):
 
 # Админские эндпоинты
 @router.get("/orders", response_model=OrderListResponse)
-def get_all_orders(
+async def get_all_orders(
     limit: int = Query(50, ge=1, le=100),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db),
     admin=Depends(get_current_admin)
 ):
-    total = db.query(Order).count()
-    orders = db.query(Order).offset(offset).limit(limit).all()
+    total = await db.query(Order).count()
+    orders = await db.query(Order).offset(offset).limit(limit).all()
     
     result_items = []
     for order in orders:
@@ -114,7 +114,7 @@ def get_all_orders(
     )
 
 @router.put("/orders/{order_id}/status", response_model=OrderResponse)
-def update_order_status(
+async def update_order_status(
     order_id: str,
     status_update: OrderStatusUpdate,
     db: Session = Depends(get_db),
@@ -124,7 +124,7 @@ def update_order_status(
     if status_update.status not in valid_statuses:
         raise HTTPException(status_code=400, detail=f"Invalid status. Allowed: {', '.join(valid_statuses)}")
     
-    order = db.query(Order).filter(Order.id == order_id).first()
+    order = await db.query(Order).filter(Order.id == order_id).first()
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
     

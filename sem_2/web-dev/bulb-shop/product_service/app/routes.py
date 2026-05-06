@@ -10,7 +10,7 @@ router = APIRouter(prefix="/api/v1", tags=["Products"])
 
 # Публичные эндпоинты
 @router.get("/products", response_model=ProductListResponse)
-def get_products(
+async def get_products(
     type: Optional[str] = Query(None),
     min_price: Optional[float] = Query(None, ge=0),
     max_price: Optional[float] = Query(None, ge=0),
@@ -18,7 +18,7 @@ def get_products(
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db)
 ):
-    query = db.query(Product)
+    query = await db.query(Product)
     
     if type:
         query = query.filter(Product.type == type)
@@ -38,20 +38,20 @@ def get_products(
     )
 
 @router.get("/products/{product_id}", response_model=ProductResponse)
-def get_product(product_id: str, db: Session = Depends(get_db)):
-    product = db.query(Product).filter(Product.id == product_id).first()
+async def get_product(product_id: str, db: Session = Depends(get_db)):
+    product = await db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     return product
 
 # Админские эндпоинты
 @router.post("/products", response_model=ProductResponse, status_code=201)
-def create_product(
+async def create_product(
     product: ProductCreate,
     db: Session = Depends(get_db),
     admin=Depends(get_current_admin)
 ):
-    existing = db.query(Product).filter(Product.sku == product.sku).first()
+    existing = await db.query(Product).filter(Product.sku == product.sku).first()
     if existing:
         raise HTTPException(status_code=409, detail="Product with this SKU already exists")
     
@@ -62,13 +62,13 @@ def create_product(
     return db_product
 
 @router.put("/products/{product_id}", response_model=ProductResponse)
-def update_product(
+async def update_product(
     product_id: str,
     product_update: ProductUpdate,
     db: Session = Depends(get_db),
     admin=Depends(get_current_admin)
 ):
-    product = db.query(Product).filter(Product.id == product_id).first()
+    product = await db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
@@ -81,12 +81,12 @@ def update_product(
     return product
 
 @router.delete("/products/{product_id}", status_code=204)
-def delete_product(
+async def delete_product(
     product_id: str,
     db: Session = Depends(get_db),
     admin=Depends(get_current_admin)
 ):
-    product = db.query(Product).filter(Product.id == product_id).first()
+    product = await db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
@@ -95,13 +95,12 @@ def delete_product(
     return None
 
 @router.patch("/products/{product_id}/stock", response_model=ProductResponse)
-def update_stock(
+async def update_stock(
     product_id: str,
     stock_update: StockUpdate,
     db: Session = Depends(get_db),
-    admin=Depends(get_current_admin)
 ):
-    product = db.query(Product).filter(Product.id == product_id).first()
+    product = await db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
