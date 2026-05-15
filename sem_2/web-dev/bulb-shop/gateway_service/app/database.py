@@ -1,13 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import os
+from config import config
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://admin_user:admin_pass@admin_db:5432/admin_db")
-
-engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+engine = create_engine(config.DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
 
 def get_db():
     db = SessionLocal()

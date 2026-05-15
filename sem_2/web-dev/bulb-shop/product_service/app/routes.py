@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Optional
 from schemas import ProductCreate, ProductUpdate, StockUpdate, ProductResponse, ProductListResponse
@@ -10,7 +10,7 @@ router = APIRouter(prefix="/api/v1", tags=["Products"])
 
 # Публичные эндпоинты
 @router.get("/products", response_model=ProductListResponse)
-async def get_products(
+def get_products(
     type: Optional[str] = Query(None),
     min_price: Optional[float] = Query(None, ge=0),
     max_price: Optional[float] = Query(None, ge=0),
@@ -18,7 +18,7 @@ async def get_products(
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db)
 ):
-    query = await db.query(Product)
+    query = db.query(Product)
     
     if type:
         query = query.filter(Product.type == type)
@@ -38,20 +38,20 @@ async def get_products(
     )
 
 @router.get("/products/{product_id}", response_model=ProductResponse)
-async def get_product(product_id: str, db: Session = Depends(get_db)):
-    product = await db.query(Product).filter(Product.id == product_id).first()
+def get_product(product_id: str, db: Session = Depends(get_db)):
+    product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     return product
 
 # Админские эндпоинты
 @router.post("/products", response_model=ProductResponse, status_code=201)
-async def create_product(
+def create_product(
     product: ProductCreate,
     db: Session = Depends(get_db),
     admin=Depends(get_current_admin)
 ):
-    existing = await db.query(Product).filter(Product.sku == product.sku).first()
+    existing = db.query(Product).filter(Product.sku == product.sku).first()
     if existing:
         raise HTTPException(status_code=409, detail="Product with this SKU already exists")
     
@@ -62,13 +62,13 @@ async def create_product(
     return db_product
 
 @router.put("/products/{product_id}", response_model=ProductResponse)
-async def update_product(
+def update_product(
     product_id: str,
     product_update: ProductUpdate,
     db: Session = Depends(get_db),
     admin=Depends(get_current_admin)
 ):
-    product = await db.query(Product).filter(Product.id == product_id).first()
+    product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
@@ -81,12 +81,12 @@ async def update_product(
     return product
 
 @router.delete("/products/{product_id}", status_code=204)
-async def delete_product(
+def delete_product(
     product_id: str,
     db: Session = Depends(get_db),
     admin=Depends(get_current_admin)
 ):
-    product = await db.query(Product).filter(Product.id == product_id).first()
+    product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
@@ -95,12 +95,12 @@ async def delete_product(
     return None
 
 @router.patch("/products/{product_id}/stock", response_model=ProductResponse)
-async def update_stock(
+def update_stock(
     product_id: str,
     stock_update: StockUpdate,
     db: Session = Depends(get_db),
 ):
-    product = await db.query(Product).filter(Product.id == product_id).first()
+    product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     

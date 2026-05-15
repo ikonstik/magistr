@@ -1,20 +1,20 @@
 services:
-  # PostgreSQL для Admin Service
-  admin_db:
+  # PostgreSQL для Gateway (админы)
+  gateway_db:
     image: postgres:15
     environment:
-      POSTGRES_USER: ${ADMIN_DB_USER}
-      POSTGRES_PASSWORD: ${ADMIN_DB_PASSWORD}
-      POSTGRES_DB: ${ADMIN_DB_NAME}
+      POSTGRES_USER: ${GATEWAY_DB_USER:-admin_user}
+      POSTGRES_PASSWORD: ${GATEWAY_DB_PASSWORD:-admin_pass}
+      POSTGRES_DB: ${GATEWAY_DB_NAME:-gateway_db}
     volumes:
-      - admin_db_data:/var/lib/postgresql/data
-      - ./admin_service/init_db.sql:/docker-entrypoint-initdb.d/init.sql
+      - gateway_db_data:/var/lib/postgresql/data
+      - ./gateway_service/init_db.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "${ADMIN_DB_PORT}:5432"
+      - "${GATEWAY_DB_PORT:-5435}:5432"
     networks:
       - bulb_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${ADMIN_DB_USER} -d ${ADMIN_DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U ${GATEWAY_DB_USER:-admin_user} -d ${GATEWAY_DB_NAME:-gateway_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,16 +24,16 @@ services:
   product_db:
     image: postgres:15
     environment:
-      POSTGRES_USER: ${PRODUCT_DB_USER}
-      POSTGRES_PASSWORD: ${PRODUCT_DB_PASSWORD}
-      POSTGRES_DB: ${PRODUCT_DB_NAME}
+      POSTGRES_USER: ${PRODUCT_DB_USER:-product_user}
+      POSTGRES_PASSWORD: ${PRODUCT_DB_PASSWORD:-product_pass}
+      POSTGRES_DB: ${PRODUCT_DB_NAME:-product_db}
     volumes:
       - product_db_data:/var/lib/postgresql/data
       - ./product_service/init_db.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - bulb_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PRODUCT_DB_USER} -d ${PRODUCT_DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U ${PRODUCT_DB_USER:-product_user} -d ${PRODUCT_DB_NAME:-product_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -43,58 +43,35 @@ services:
   order_db:
     image: postgres:15
     environment:
-      POSTGRES_USER: ${ORDER_DB_USER}
-      POSTGRES_PASSWORD: ${ORDER_DB_PASSWORD}
-      POSTGRES_DB: ${ORDER_DB_NAME}
+      POSTGRES_USER: ${ORDER_DB_USER:-order_user}
+      POSTGRES_PASSWORD: ${ORDER_DB_PASSWORD:-order_pass}
+      POSTGRES_DB: ${ORDER_DB_NAME:-order_db}
     volumes:
       - order_db_data:/var/lib/postgresql/data
       - ./order_service/init_db.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - bulb_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${ORDER_DB_USER} -d ${ORDER_DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U ${ORDER_DB_USER:-order_user} -d ${ORDER_DB_NAME:-order_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
-    restart: unless-stopped
-
-  # Admin Service (только аутентификация)
-  admin_service:
-    build: ./admin_service
-    ports:
-      - "${ADMIN_SERVICE_PORT}:8000"
-    env_file:
-      - .env
-    environment:
-      DATABASE_URL: postgresql://${ADMIN_DB_USER}:${ADMIN_DB_PASSWORD}@admin_db:5432/${ADMIN_DB_NAME}
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-      JWT_ALGORITHM: ${JWT_ALGORITHM}
-      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
-    depends_on:
-      admin_db:
-        condition: service_healthy
-    volumes:
-      - ./admin_service/app:/app
-    networks:
-      - bulb_network
     restart: unless-stopped
 
   # Product Service
   product_service:
     build: ./product_service
     ports:
-      - "${PRODUCT_SERVICE_PORT}:8000"
+      - "${PRODUCT_SERVICE_PORT:-8001}:8000"
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgresql://${PRODUCT_DB_USER}:${PRODUCT_DB_PASSWORD}@product_db:5432/${PRODUCT_DB_NAME}
+      DATABASE_URL: postgresql://${PRODUCT_DB_USER:-product_user}:${PRODUCT_DB_PASSWORD:-product_pass}@product_db:5432/${PRODUCT_DB_NAME:-product_db}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       JWT_ALGORITHM: ${JWT_ALGORITHM}
     depends_on:
       product_db:
         condition: service_healthy
-      admin_service:
-        condition: service_started
     networks:
       - bulb_network
     restart: unless-stopped
@@ -103,14 +80,14 @@ services:
   order_service:
     build: ./order_service
     ports:
-      - "${ORDER_SERVICE_PORT}:8000"
+      - "${ORDER_SERVICE_PORT:-8002}:8000"
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgresql://${ORDER_DB_USER}:${ORDER_DB_PASSWORD}@order_db:5432/${ORDER_DB_NAME}
+      DATABASE_URL: postgresql://${ORDER_DB_USER:-order_user}:${ORDER_DB_PASSWORD:-order_pass}@order_db:5432/${ORDER_DB_NAME:-order_db}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       JWT_ALGORITHM: ${JWT_ALGORITHM}
-      PRODUCT_SERVICE_URL: http://product_service:${PRODUCT_SERVICE_INTERNAL_PORT}
+      PRODUCT_SERVICE_URL: http://product_service:8000
     depends_on:
       order_db:
         condition: service_healthy
@@ -120,8 +97,34 @@ services:
       - bulb_network
     restart: unless-stopped
 
+  # API Gateway (с встроенной аутентификацией)
+  gateway_service:
+    build: ./gateway_service
+    ports:
+      - "${GATEWAY_PORT:-8003}:8003"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${GATEWAY_DB_USER:-admin_user}:${GATEWAY_DB_PASSWORD:-admin_pass}@gateway_db:5432/${GATEWAY_DB_NAME:-gateway_db}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_ALGORITHM: ${JWT_ALGORITHM}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-60}
+      PRODUCT_SERVICE_URL: http://product_service:8000
+      ORDER_SERVICE_URL: http://order_service:8000
+      GATEWAY_PORT: 8003
+    depends_on:
+      gateway_db:
+        condition: service_healthy
+      product_service:
+        condition: service_started
+      order_service:
+        condition: service_started
+    networks:
+      - bulb_network
+    restart: unless-stopped
+
 volumes:
-  admin_db_data:
+  gateway_db_data:
   product_db_data:
   order_db_data:
 

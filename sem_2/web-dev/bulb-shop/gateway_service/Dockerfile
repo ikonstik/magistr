@@ -11,6 +11,6 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ./app /app
+COPY ./init_db.sql /docker-entrypoint-initdb.d/init.sql
 
-# Убираем init_admin.py - он не нужен
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["sh", "-c", "python -c \"from database import engine, Base; Base.metadata.create_all(bind=engine)\" && uvicorn main:app --host 0.0.0.0 --port 8003 --reload"]

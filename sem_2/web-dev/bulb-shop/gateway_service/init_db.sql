@@ -8,10 +8,13 @@ CREATE TABLE IF NOT EXISTS admins (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Вставляем админа с правильным хешем (пароль: admin123)
+-- Удаляем старых админов
+DELETE FROM admins WHERE login IN ('admin@bulbshop.ru', 'manager@bulbshop.ru');
+
+-- Вставляем админа с хешем SHA-256 (пароль: admin123)
 INSERT INTO admins (login, password_hash, role) 
 VALUES (
     'admin@bulbshop.ru', 
-    '$2a$12$7B9gyWeEenvwnT4M3OgiEOJ3ZXsydSLShkrW.cz5qBbqhB.xzmKqy', 
+    'sha256$c4e7b552353393fa38e72458ff820321$32b60b8f1ab9a2a7dc522adc4c03d2a857900f87307fdb489367823f49f9ee6b', 
     'admin'
 );
