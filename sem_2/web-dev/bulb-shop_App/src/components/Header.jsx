@@ -9,8 +9,9 @@ import {
 	Box,
 	Container,
 } from '@mui/material'
-import { ShoppingCart, TrackChanges } from '@mui/icons-material'
+import { ShoppingCart, TrackChanges, AdminPanelSettings } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
+import { adminApi } from '../services/api'
 
 const Header = ({ cartItemsCount = 3 }) => {
 	const navigate = useNavigate()
@@ -28,6 +29,16 @@ const Header = ({ cartItemsCount = 3 }) => {
 					>
 						💡 Магазин лампочек
 					</Typography>
+
+					{adminApi.isAuthenticated() && (
+						<Button
+							color='inherit'
+							startIcon={<AdminPanelSettings />}
+							onClick={() => navigate('/admin')}
+						>
+							Админ
+						</Button>
+					)}
 
 					{/* Навигация */}
 					<Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>

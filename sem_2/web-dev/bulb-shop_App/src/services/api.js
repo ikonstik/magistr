@@ -1,7 +1,7 @@
-const ADMIN_SERVICE_URL = import.meta.env.VITE_ADMIN_SERVICE_URL
-const PRODUCT_SERVICE_URL = import.meta.env.VITE_PRODUCT_SERVICE_URL
-const ORDER_SERVICE_URL = import.meta.env.VITE_ORDER_SERVICE_URL
+// Базовый URL для API Gateway (единая точка входа)
+const GATEWAY_URL = import.meta.env.VITE_GATEWAY_URL || 'http://localhost:8003'
 
+// Вспомогательная функция для обработки ответов
 const handleResponse = async response => {
 	if (!response.ok) {
 		const error = await response.json().catch(() => ({}))
@@ -10,19 +10,50 @@ const handleResponse = async response => {
 	return response.json()
 }
 
+// Сохранение и получение токена из localStorage
+const getToken = () => localStorage.getItem('admin_token')
+const setToken = token => localStorage.setItem('admin_token', token)
+const removeToken = () => localStorage.removeItem('admin_token')
+
+// ==================== Аутентификация (через Gateway) ====================
 export const adminApi = {
 	login: async (login, password) => {
-		const response = await fetch(`${ADMIN_SERVICE_URL}/api/admin/login`, {
+		const response = await fetch(`${GATEWAY_URL}/api/admin/login`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ login, password }),
 		})
+		const data = await handleResponse(response)
+		if (data.token) {
+			setToken(data.token)
+		}
+		return data
+	},
+
+	logout: () => {
+		removeToken()
+	},
+
+	getCurrentAdmin: async () => {
+		const token = getToken()
+		if (!token) throw new Error('No token')
+
+		const response = await fetch(`${GATEWAY_URL}/api/admin/me`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
 		return handleResponse(response)
+	},
+
+	isAuthenticated: () => {
+		return !!getToken()
 	},
 }
 
+// ==================== Product Service (через Gateway) ====================
 export const productApi = {
-	// Получение всех товаров с фильтрацией
+	// Публичные эндпоинты (без токена)
 	getProducts: async (params = {}) => {
 		const queryParams = new URLSearchParams()
 		if (params.type) queryParams.append('type', params.type)
@@ -31,20 +62,22 @@ export const productApi = {
 		if (params.limit) queryParams.append('limit', params.limit)
 		if (params.offset) queryParams.append('offset', params.offset)
 
-		const url = `${PRODUCT_SERVICE_URL}/api/v1/products${queryParams.toString() ? `?${queryParams}` : ''}`
+		const url = `${GATEWAY_URL}/api/v1/products${queryParams.toString() ? `?${queryParams}` : ''}`
 		const response = await fetch(url)
 		return handleResponse(response)
 	},
 
-	// Получение товара по ID
 	getProductById: async id => {
-		const response = await fetch(`${PRODUCT_SERVICE_URL}/api/v1/products/${id}`)
+		const response = await fetch(`${GATEWAY_URL}/api/v1/products/${id}`)
 		return handleResponse(response)
 	},
 
-	// Создание товара (только для админа)
-	createProduct: async (productData, token) => {
-		const response = await fetch(`${PRODUCT_SERVICE_URL}/api/v1/products`, {
+	// Админские эндпоинты (требуют токен)
+	createProduct: async productData => {
+		const token = getToken()
+		if (!token) throw new Error('Unauthorized')
+
+		const response = await fetch(`${GATEWAY_URL}/api/v1/products`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -55,48 +88,46 @@ export const productApi = {
 		return handleResponse(response)
 	},
 
-	// Обновление товара (только для админа)
-	updateProduct: async (id, productData, token) => {
-		const response = await fetch(
-			`${PRODUCT_SERVICE_URL}/api/v1/products/${id}`,
-			{
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
-				},
-				body: JSON.stringify(productData),
+	updateProduct: async (id, productData) => {
+		const token = getToken()
+		if (!token) throw new Error('Unauthorized')
+
+		const response = await fetch(`${GATEWAY_URL}/api/v1/products/${id}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
 			},
-		)
+			body: JSON.stringify(productData),
+		})
 		return handleResponse(response)
 	},
 
-	// Обновление остатков
-	updateStock: async (id, stock, token) => {
-		const response = await fetch(
-			`${PRODUCT_SERVICE_URL}/api/v1/products/${id}/stock`,
-			{
-				method: 'PATCH',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ stock }),
+	updateStock: async (id, stock) => {
+		const token = getToken()
+		if (!token) throw new Error('Unauthorized')
+
+		const response = await fetch(`${GATEWAY_URL}/api/v1/products/${id}/stock`, {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
 			},
-		)
+			body: JSON.stringify({ stock }),
+		})
 		return handleResponse(response)
 	},
 
-	// Удаление товара (только для админа)
-	deleteProduct: async (id, token) => {
-		const response = await fetch(
-			`${PRODUCT_SERVICE_URL}/api/v1/products/${id}`,
-			{
-				method: 'DELETE',
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
+	deleteProduct: async id => {
+		const token = getToken()
+		if (!token) throw new Error('Unauthorized')
+
+		const response = await fetch(`${GATEWAY_URL}/api/v1/products/${id}`, {
+			method: 'DELETE',
+			headers: {
+				Authorization: `Bearer ${token}`,
 			},
-		)
+		})
 		if (response.status !== 204) {
 			return handleResponse(response)
 		}
@@ -104,10 +135,11 @@ export const productApi = {
 	},
 }
 
+// ==================== Order Service (через Gateway) ====================
 export const orderApi = {
-	// Создание заказа
+	// Публичные эндпоинты
 	createOrder: async orderData => {
-		const response = await fetch(`${ORDER_SERVICE_URL}/api/v1/orders`, {
+		const response = await fetch(`${GATEWAY_URL}/api/v1/orders`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(orderData),
@@ -115,32 +147,32 @@ export const orderApi = {
 		return handleResponse(response)
 	},
 
-	// Получение заказа по ID
 	getOrderById: async id => {
-		const response = await fetch(`${ORDER_SERVICE_URL}/api/v1/orders/${id}`)
+		const response = await fetch(`${GATEWAY_URL}/api/v1/orders/${id}`)
 		return handleResponse(response)
 	},
 
-	// Получение заказов по номеру телефона
 	getOrdersByPhone: async phone => {
 		const response = await fetch(
-			`${ORDER_SERVICE_URL}/api/v1/orders/phone/${encodeURIComponent(phone)}`,
+			`${GATEWAY_URL}/api/v1/orders/phone/${encodeURIComponent(phone)}`,
 		)
 		return handleResponse(response)
 	},
 
-	// Отслеживание заказа по трек-коду
 	trackOrder: async trackingCode => {
 		const response = await fetch(
-			`${ORDER_SERVICE_URL}/api/v1/orders/track/${trackingCode}`,
+			`${GATEWAY_URL}/api/v1/orders/track/${trackingCode}`,
 		)
 		return handleResponse(response)
 	},
 
-	// Получение всех заказов (только для админа)
-	getAllOrders: async (token, limit = 50, offset = 0) => {
+	// Админские эндпоинты (требуют токен)
+	getAllOrders: async (limit = 50, offset = 0) => {
+		const token = getToken()
+		if (!token) throw new Error('Unauthorized')
+
 		const response = await fetch(
-			`${ORDER_SERVICE_URL}/api/v1/orders?limit=${limit}&offset=${offset}`,
+			`${GATEWAY_URL}/api/v1/orders?limit=${limit}&offset=${offset}`,
 			{
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -150,19 +182,18 @@ export const orderApi = {
 		return handleResponse(response)
 	},
 
-	// Обновление статуса заказа (только для админа)
-	updateOrderStatus: async (id, status, location, token) => {
-		const response = await fetch(
-			`${ORDER_SERVICE_URL}/api/v1/orders/${id}/status`,
-			{
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
-				},
-				body: JSON.stringify({ status, location }),
+	updateOrderStatus: async (id, status, location) => {
+		const token = getToken()
+		if (!token) throw new Error('Unauthorized')
+
+		const response = await fetch(`${GATEWAY_URL}/api/v1/orders/${id}/status`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
 			},
-		)
+			body: JSON.stringify({ status, location }),
+		})
 		return handleResponse(response)
 	},
 }

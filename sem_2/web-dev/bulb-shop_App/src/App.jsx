@@ -15,7 +15,10 @@ import ProductPage from './pages/ProductPage'
 import CartPage from './pages/CartPage'
 import CheckoutPage from './pages/CheckoutPage'
 import OrderTrackingPage from './pages/OrderTrackingPage'
-// import AdminPage from './pages/AdminPage'
+import AdminLoginPage from './pages/AdminLoginPage'
+import AdminLayout from './components/Admin/AdminLayout'
+import AdminProductsPage from './pages/Admin/AdminProductsPage'
+import AdminOrdersPage from './pages/Admin/AdminOrdersPage'
 
 // Тема Material UI
 const theme = createTheme({
@@ -74,6 +77,11 @@ const AppContent = () => {
 				<Route path='/cart' element={<CartPage />} />
 				<Route path='/checkout' element={<CheckoutPage />} />
 				<Route path='/tracking' element={<OrderTrackingPage />} />
+				<Route path='/admin/login' element={<AdminLoginPage />} />
+				<Route path='/admin' element={<AdminLayout />}>
+					<Route path='products' element={<AdminProductsPage />} />
+					<Route path='orders' element={<AdminOrdersPage />} />
+				</Route>
 			</Routes>
 			<AppSnackbar />
 		</>
