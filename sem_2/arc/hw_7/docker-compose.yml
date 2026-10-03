@@ -1,0 +1,87 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app_network
+
+  auth_app:
+    build:
+      context: .
+      dockerfile: app1/Dockerfile
+    container_name: auth_app
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:pass@postgres:5432/postgres
+      SECRET_KEY: your-secret-key-here-change-in-production
+    networks:
+      - app_network
+    volumes:
+      - ./database:/app/database
+    command: uvicorn auth_app:app --host 0.0.0.0 --port 8000
+
+  post_app:
+    build:
+      context: .
+      dockerfile: app2/Dockerfile
+    container_name: post_app
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      auth_app:
+        condition: service_started
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:pass@postgres:5432/postgres
+      SECRET_KEY: your-secret-key-here-change-in-production
+    networks:
+      - app_network
+    volumes:
+      - ./database:/app/database
+    command: uvicorn post_app:app --host 0.0.0.0 --port 8001
+
+  # Добавляем сервис для инициализации БД
+  db_init:
+    image: python:3.9-slim
+    container_name: db_init
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./database:/app/database
+      - ./requirements.txt:/app/requirements.txt
+    working_dir: /app
+    command: >
+      sh -c "
+      pip install --no-cache-dir -r requirements.txt &&
+      python -c 'import asyncio; from database.db_app import init_db; asyncio.run(init_db())'
+      "
+    networks:
+      - app_network
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:pass@postgres:5432/postgres
+
+volumes:
+  postgres_data:
+
+networks:
+  app_network:
+    driver: bridge

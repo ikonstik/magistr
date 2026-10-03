@@ -1,0 +1,138 @@
+{
+  "info": {
+    "_postman_id": "101e1408-e1a2-4266-aa74-3203ff64e183",
+    "name": "Admin Panel Service API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52207815",
+    "_collection_link": "https://go.postman.co/collection/52207815-101e1408-e1a2-4266-aa74-3203ff64e183?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Вход в панель управления",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"login\": \"admin@bulbshop.ru\",\n  \"password\": \"secure123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url_admin}}/api/admin/login",
+              "host": [
+                "{{base_url_admin}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "login"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"admin@bulbshop.ru\",\r\n  \"password\": \"secure123\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url_admin}}/api/admin/login",
+                  "host": [
+                    "{{base_url_admin}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTIzIiwicm9sZSI6ImFkbWluIn0.example\",\n    \"role\": \"admin\",\n    \"expires_in\": 3600\n}"
+            },
+            {
+              "name": "401 Unauthorized",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"admin@bulbshop.ru\",\r\n  \"password\": \"secure123454\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url_admin}}/api/admin/login",
+                  "host": [
+                    "{{base_url_admin}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "login"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"Invalid login or password\",\n    \"status\": 401\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

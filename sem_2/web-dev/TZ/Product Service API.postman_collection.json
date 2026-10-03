@@ -1,0 +1,901 @@
+{
+  "info": {
+    "_postman_id": "4dca3485-f06c-496e-8a16-80c30c496838",
+    "name": "Product Service API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52207815",
+    "_collection_link": "https://go.postman.co/collection/52207815-4dca3485-f06c-496e-8a16-80c30c496838?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Получить список товаров",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_products}}/api/v1/products?type=LED&min_price=100&max_price=500&limit=20&offset=0",
+              "host": [
+                "{{base_url_products}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "LED"
+                },
+                {
+                  "key": "min_price",
+                  "value": "100"
+                },
+                {
+                  "key": "max_price",
+                  "value": "500"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products?type=LED&min_price=100&max_price=500&limit=20&offset=0",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "LED"
+                    },
+                    {
+                      "key": "min_price",
+                      "value": "100"
+                    },
+                    {
+                      "key": "max_price",
+                      "value": "500"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"items\": [\n        {\n            \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n            \"sku\": \"LED-27W-01\",\n            \"name\": \"LED лампочка 27W E27\",\n            \"description\": \"Яркая LED лампа, 27W, холодный свет\",\n            \"price\": 350,\n            \"stock\": 100,\n            \"type\": \"LED\",\n            \"wattage\": 27,\n            \"socket\": \"E27\",\n            \"image_url\": \"https://example.com/led27.jpg\",\n            \"created_at\": \"2026-01-15T10:00:00Z\",\n            \"updated_at\": \"2026-01-15T10:00:00Z\"\n        }\n    ],\n    \"total\": 1,\n    \"limit\": 20,\n    \"offset\": 0\n}"
+            },
+            {
+              "name": "400 Bad Request",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products?type=LED&min_price=100&max_price=500&limit=20&offset=0",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "LED"
+                    },
+                    {
+                      "key": "min_price",
+                      "value": "100"
+                    },
+                    {
+                      "key": "max_price",
+                      "value": "500"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"min_price must be greater than 0\",\n    \"status\": 400\n}"
+            }
+          ]
+        },
+        {
+          "name": "Получить товар по ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_products}}/api/v1/products/123e4567-e89b-12d3-a456-426614174000",
+              "host": [
+                "{{base_url_products}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "123e4567-e89b-12d3-a456-426614174000"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products/123e4567-e89b-12d3-a456-426614174000",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "123e4567-e89b-12d3-a456-426614174000"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"sku\": \"LED-27W-01\",\n    \"name\": \"LED лампочка 27W E27\",\n    \"description\": \"Яркая LED лампа, 27W, холодный свет\",\n    \"price\": 350,\n    \"stock\": 100,\n    \"type\": \"LED\",\n    \"wattage\": 27,\n    \"socket\": \"E27\",\n    \"image_url\": \"https://example.com/led27.jpg\",\n    \"created_at\": \"2026-01-15T10:00:00Z\",\n    \"updated_at\": \"2026-01-15T10:00:00Z\"\n}"
+            },
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products/123e4567-e89b-12d3-a456-426614174000",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "123e4567-e89b-12d3-a456-426614174000"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"Product not found\",\n    \"status\": 404\n}"
+            }
+          ]
+        },
+        {
+          "name": "Добавить новый товар в магазин (админ)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"LED-27W-01\",\n  \"name\": \"LED лампочка 27W E27\",\n  \"description\": \"Яркая LED лампа, 27W, холодный свет\",\n  \"price\": 350.00,\n  \"stock\": 100,\n  \"type\": \"LED\",\n  \"wattage\": 27,\n  \"socket\": \"E27\",\n  \"image_url\": \"https://example.com/led27.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url_products}}/api/v1/products",
+              "host": [
+                "{{base_url_products}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"sku\": \"LED-27W-01\",\r\n  \"name\": \"LED лампочка 27W E27\",\r\n  \"description\": \"Яркая LED лампа, 27W, холодный свет\",\r\n  \"price\": 350.00,\r\n  \"stock\": 100,\r\n  \"type\": \"LED\",\r\n  \"wattage\": 27,\r\n  \"socket\": \"E27\",\r\n  \"image_url\": \"https://example.com/led27.jpg\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"sku\": \"LED-27W-01\",\n    \"name\": \"LED лампочка 27W E27\",\n    \"price\": 350,\n    \"stock\": 100,\n    \"created_at\": \"2026-04-12T12:00:00Z\"\n}"
+            },
+            {
+              "name": "400 Bad Request (validation)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"LED лампочка 27W E27\",\r\n  \"description\": \"Яркая LED лампа, 27W, холодный свет\",\r\n  \"price\": 350.00,\r\n  \"stock\": 100,\r\n  \"type\": \"LED\",\r\n  \"wattage\": 27,\r\n  \"socket\": \"E27\",\r\n  \"image_url\": \"https://example.com/led27.jpg\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"sku is required\",\n    \"status\": 400\n}"
+            },
+            {
+              "name": "401 Unauthorized",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"sku\": \"LED-27W-01\",\r\n  \"name\": \"LED лампочка 27W E27\",\r\n  \"description\": \"Яркая LED лампа, 27W, холодный свет\",\r\n  \"price\": 350.00,\r\n  \"stock\": 100,\r\n  \"type\": \"LED\",\r\n  \"wattage\": 27,\r\n  \"socket\": \"E27\",\r\n  \"image_url\": \"https://example.com/led27.jpg\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"Missing or invalid token\",\n    \"status\": 401\n}"
+            },
+            {
+              "name": "409 Conflict (duplicate SKU)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"sku\": \"LED-27W-01\",\r\n  \"name\": \"LED лампочка 27W E27\",\r\n  \"description\": \"Яркая LED лампа, 27W, холодный свет\",\r\n  \"price\": 350.00,\r\n  \"stock\": 100,\r\n  \"type\": \"LED\",\r\n  \"wattage\": 27,\r\n  \"socket\": \"E27\",\r\n  \"image_url\": \"https://example.com/led27.jpg\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products"
+                  ]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"Product with this SKU already exists\",\n    \"status\": 409\n}"
+            }
+          ]
+        },
+        {
+          "name": "Обновить информацию о товаре (админ)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 390.00,\n  \"stock\": 85\n}"
+            },
+            "url": {
+              "raw": "{{base_url_products}}/api/v1/products/123e4567-e89b-12d3-a456-426614174000",
+              "host": [
+                "{{base_url_products}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "123e4567-e89b-12d3-a456-426614174000"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"price\": 390.00,\r\n  \"stock\": 85\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products/123e4567-e89b-12d3-a456-426614174000",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "123e4567-e89b-12d3-a456-426614174000"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"sku\": \"LED-27W-01\",\n    \"name\": \"LED лампочка 27W E27\",\n    \"price\": 390,\n    \"stock\": 85,\n    \"updated_at\": \"2026-04-12T12:05:00Z\"\n}"
+            },
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"price\": 390.00,\r\n  \"stock\": 85\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products/123e4567-e89b-12d3-a456-426614174000",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "123e4567-e89b-12d3-a456-426614174000"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"Product not found\",\n    \"status\": 404\n}"
+            },
+            {
+              "name": "401 Unauthorized",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"price\": 390.00,\r\n  \"stock\": 85\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products/123e4567-e89b-12d3-a456-426614174000",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "123e4567-e89b-12d3-a456-426614174000"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"Invalid token\",\n    \"status\": 401\n}"
+            }
+          ]
+        },
+        {
+          "name": "Удалить товар из магазина (админ)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url_products}}/api/v1/products/123e4567-e89b-12d3-a456-426614174000",
+              "host": [
+                "{{base_url_products}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "123e4567-e89b-12d3-a456-426614174000"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products/123e4567-e89b-12d3-a456-426614174000",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "123e4567-e89b-12d3-a456-426614174000"
+                  ]
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n    \"message\": \"Product deleted successfully\"\r\n}"
+            },
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products/123e4567-e89b-12d3-a456-426614174000",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "123e4567-e89b-12d3-a456-426614174000"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"Product not found\",\n    \"status\": 404\n}"
+            },
+            {
+              "name": "401 Unauthorized",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products/123e4567-e89b-12d3-a456-426614174000",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "123e4567-e89b-12d3-a456-426614174000"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"Token required\",\n    \"status\": 401\n}"
+            }
+          ]
+        },
+        {
+          "name": "Обновить количество товара (админ)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stock\": 95\n}"
+            },
+            "url": {
+              "raw": "{{base_url_products}}/api/v1/products/123e4567-e89b-12d3-a456-426614174000/stock",
+              "host": [
+                "{{base_url_products}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "123e4567-e89b-12d3-a456-426614174000",
+                "stock"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"stock\": 95\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products/123e4567-e89b-12d3-a456-426614174000/stock",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "123e4567-e89b-12d3-a456-426614174000",
+                    "stock"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"stock\": 95,\n    \"updated_at\": \"2026-04-12T12:10:00Z\"\n}"
+            },
+            {
+              "name": "400 Bad Request (negative stock)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"stock\": -95\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url_products}}/api/v1/products/123e4567-e89b-12d3-a456-426614174000/stock",
+                  "host": [
+                    "{{base_url_products}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "123e4567-e89b-12d3-a456-426614174000",
+                    "stock"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"Stock cannot be negative\",\n    \"status\": 400\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
